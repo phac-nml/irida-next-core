@@ -49,20 +49,17 @@ module MetadataTemplates
     end
 
     def save_template
-      unless @metadata_template.save
-        raise MetadataTemplateCreateError,
-              @namespace.errors.add(:base, @metadata_template.errors.full_messages.first)
-      end
+      return unless @metadata_template.save
 
       create_activities
     end
 
+    def can_create_template?
+      authorize! namespace, to: :create_metadata_template?
+    end
+
     def create_activities
-      activity_key = if namespace.group_namespace?
-                       'group.metadata_template.create'
-                     else
-                       'namespaces_project_namespace.metadata_template.create'
-                     end
+      activity_key = namespace.group_namespace? ? 'group.metadata_template.create' : 'namespaces_project_namespace.metadata_template.create'
       namespace.create_activity key: activity_key,
                                 owner: current_user,
                                 parameters: {
