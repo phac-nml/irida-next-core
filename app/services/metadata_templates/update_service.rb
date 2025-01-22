@@ -11,15 +11,26 @@ module MetadataTemplates
     end
 
     def execute
-      authorize! @metadata_template.namespace, to: :update_metadata_templates?
+      authorize! @metadata_template.namespace, to: :update_metadata_template?
 
-      updated = @metadata_template.update(params)
+      validate_params
 
-      create_activities if updated
-      @metadata_template
+      return false unless @metadata_template.update(params)
+
+      create_activities
+      true
+    rescue MetadataTemplates::UpdateService::MetadataTemplateUpdateError => e
+      @metadata_template.errors.add(:base, e.message)
     end
 
     private
+
+    def validate_params
+      return unless @params[:fields].blank? || !@params[:fields].is_a?(Array)
+
+      raise MetadataTemplateUpdateError,
+            I18n.t('services.metadata_templates.create.required.fields')
+    end
 
     def create_activities
       activity_key = if @metadata_template.namespace.group_namespace?
