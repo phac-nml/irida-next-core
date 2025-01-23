@@ -50,7 +50,7 @@ module MetadataTemplates
     end
 
     def save_template
-      return unless @metadata_template.save
+      return unless @metadata_template.save!
 
       create_activities
     end
