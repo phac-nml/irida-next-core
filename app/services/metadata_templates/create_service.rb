@@ -4,10 +4,8 @@ module MetadataTemplates
   # Service used to Create Metadata Templates
   class CreateService < BaseService
     MetadataTemplateCreateError = Class.new(StandardError)
-    MetadataTemplateCreateError = Class.new(StandardError)
     attr_accessor :namespace
 
-    def initialize(user, namespace, params = {})
     def initialize(user, namespace, params = {})
       super(user, params)
       @metadata_template = nil
@@ -59,9 +57,11 @@ module MetadataTemplates
     end
 
     def create_activities
-      activity_key = namespace.group_namespace? ?
-        'group.metadata_template.create' :
-        'namespaces_project_namespace.metadata_template.create'
+      activity_key = if namespace.group_namespace?
+                       'group.metadata_template.create'
+                     else
+                       'namespaces_project_namespace.metadata_template.create'
+                     end
 
       namespace.create_activity(
         key: activity_key,
