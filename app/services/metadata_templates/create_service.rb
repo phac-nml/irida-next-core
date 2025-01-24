@@ -17,7 +17,7 @@ module MetadataTemplates
     end
 
     def execute
-      authorize! namespace, to: :create_metadata_template?
+      authorize! namespace, to: :create_metadata_templates?
 
       validate_params
 
