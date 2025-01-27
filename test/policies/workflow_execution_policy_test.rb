@@ -129,6 +129,15 @@ class WorkflowExecutionPolicyTest < ActiveSupport::TestCase
     scoped_user_workflow_executions = @policy.apply_scope(WorkflowExecution, type: :relation, name: :user,
                                                                              scope_options: { user: @user })
 
-    assert_equal 19, scoped_user_workflow_executions.count
+    assert_equal 20, scoped_user_workflow_executions.count
+  end
+
+  test 'automated and shared scope' do
+    project = projects(:project1)
+
+    workflow_executions = @policy.apply_scope(WorkflowExecution, type: :relation, name: :automated_and_shared,
+                                                                 scope_options: { project: })
+
+    assert_equal 12, workflow_executions.count
   end
 end
