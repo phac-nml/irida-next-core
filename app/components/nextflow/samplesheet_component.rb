@@ -3,7 +3,8 @@
 module Nextflow
   # Render the contents of a Nextflow samplesheet to a table
   class SamplesheetComponent < Component
-    attr_reader :properties, :samples, :required_properties, :metadata_fields, :namespace_id, :workflow_params
+    attr_reader :properties, :samples, :required_properties, :metadata_fields, :namespace_id, :workflow_params,
+                :patterns
 
     FILE_CELL_TYPES = %w[fastq_cell file_cell].freeze
 
@@ -13,16 +14,69 @@ module Nextflow
       @metadata_fields = fields
       @required_properties = schema['items']['required'] || []
       @workflow_params = workflow_params
+      @patterns = {}
       extract_properties(schema)
     end
 
+    def samples_workflow_executions_attributes
+      attributes = samples.each_with_index.to_h do |sample, index|
+        [index, samples_workflow_execution_attributes(sample)]
+      end
+      attributes.to_json
+    end
+
     private
+
+    def samples_workflow_execution_attributes(sample)
+      {
+        'sample_id' => sample.id,
+        'samplesheet_params' => sample_samplesheet_params(sample),
+        'patterns' => {}
+      }
+    end
+
+    def sample_samplesheet_params(sample) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/MethodLength
+      @properties.to_h do |name, property|
+        case property['cell_type']
+        when 'sample_cell'
+          [name, { form_value: sample.puid }]
+        when 'sample_name_cell'
+          [name, { form_value: sample.name }]
+        when 'fastq_cell'
+          [name,
+           file_samplesheet_values(sample.attachments.empty? ? {} : sample.most_recent_fastq_file(name,
+                                                                                                  @workflow_params))]
+        when 'file_cell'
+          [name,
+           file_samplesheet_values(sample.most_recent_other_file(property['autopopulate'], property['pattern']))]
+        when 'metadata_cell'
+          [name, metadata_samplesheet_values(sample, name)]
+        when 'dropdown_cell' || 'input_cell'
+          [name, { form_value: '' }]
+        end
+      end
+    end
+
+    def file_samplesheet_values(file)
+      { form_value: file.empty? ? '' : file[:global_id],
+        filename: file.empty? ? I18n.t('nextflow.samplesheet.file_cell_component.no_selected_file') : file[:filename],
+        attachment_id: file.empty? ? '' : file[:id] }
+    end
+
+    def metadata_samplesheet_values(sample, name)
+      metadata = sample.metadata.fetch(name, '')
+      { form_value: metadata.empty? ? '' : metadata }
+    end
 
     def extract_properties(schema)
       @properties = schema['items']['properties']
       @properties.each do |property, entry|
         @properties[property]['required'] = schema['items']['required'].include?(property)
         @properties[property]['cell_type'] = identify_cell_type(property, entry)
+        if @properties[property]['pattern'] && %w[fastq_cell
+                                                  file_cell].include?(@properties[property]['cell_type'])
+          @patterns[property] = @properties[property]['pattern']
+        end
       end
 
       if @required_properties.include?('fastq_1') && @required_properties.include?('fastq_2')
