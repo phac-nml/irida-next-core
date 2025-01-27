@@ -11,6 +11,7 @@ module MetadataTemplates
       @metadata_template = nil
       @namespace = namespace
       @params = params
+      @params = params
     end
 
     def execute
@@ -61,14 +62,17 @@ module MetadataTemplates
                      else
                        'namespaces_project_namespace.metadata_template.create'
                      end
-      namespace.create_activity key: activity_key,
-                                owner: current_user,
-                                parameters: {
-                                  template_id: @metadata_template.id,
-                                  template_name: @metadata_template.name,
-                                  namespace_id: @namespace.id,
-                                  action: 'metadata_template_create'
-                                }
+
+      namespace.create_activity(
+        key: activity_key,
+        owner: current_user,
+        parameters: {
+          template_id: @metadata_template.id,
+          template_name: @metadata_template.name,
+          namespace_id: @namespace.id,
+          action: 'metadata_template_create'
+        }
+      )
     end
   end
 end
