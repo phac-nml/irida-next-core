@@ -1,5 +1,11 @@
 <% invalid_value = @condition.errors.include?(:value) %>
-<div class="form-field w-6/12 value <%= 'invalid' if invalid_value %>">
+<% exists_operator = %w[exists not_exists].include?(@condition.operator) %>
+<div
+  class="
+    form-field w-6/12 value <%= 'invalid' if invalid_value %>
+    <%= 'invisible' if exists_operator %>
+  "
+>
   <% if %w[in not_in].include?(@condition.operator) %>
     <div
       data-controller="list-filter"
