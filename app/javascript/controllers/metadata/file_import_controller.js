@@ -4,7 +4,7 @@ import * as XLSX from "xlsx";
 export default class extends Controller {
   static targets = ["selectInput", "submitButton"];
   static values = {
-    loaded: Boolean
+    loaded: Boolean,
   };
 
   #disabled_classes = [
