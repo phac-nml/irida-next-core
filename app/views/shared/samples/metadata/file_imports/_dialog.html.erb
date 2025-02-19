@@ -9,6 +9,11 @@
       <%= form_for(:file_import, url: url, method: :post) do |form| %>
         <input type="hidden" name="broadcast_target" value="<%= @broadcast_target %>"/>
         <div class="grid gap-4" data-controller="metadata--file-import">
+          <input
+            data-metadata--file-import-target="samplesCount"
+            type="hidden"
+            name="samples_count"
+          >
           <p class="text-base leading-relaxed text-slate-500 dark:text-slate-400">
             <%= t(".description") %>
           </p>
@@ -79,6 +84,7 @@
                         class: "button button--size-default button--state-primary",
                         data: {
                           "metadata--file-import-target": "submitButton",
+                          action: "click->viral--dialog#hideClose",
                         } %>
           </div>
         </div>
