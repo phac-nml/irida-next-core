@@ -511,7 +511,7 @@ module Projects
         find('input#select2-input').click
         find("button[data-viral--select2-value-param='#{@project2.id}']").click
         click_on I18n.t('projects.samples.transfers.dialog.submit_button')
-        assert_text I18n.t('projects.samples.transfers.dialog.spinner_message')
+        assert_text I18n.t('shared.progress_bar.in_progress')
 
         perform_enqueued_jobs only: [::Samples::TransferJob]
       end
@@ -565,7 +565,7 @@ module Projects
         find('input#select2-input').click
         find("button[data-viral--select2-value-param='#{@project2.id}']").click
         click_on I18n.t('projects.samples.transfers.dialog.submit_button')
-        assert_text I18n.t('projects.samples.transfers.dialog.spinner_message')
+        assert_text I18n.t('shared.progress_bar.in_progress')
 
         perform_enqueued_jobs only: [::Samples::TransferJob]
         ### ACTIONS END ###
@@ -620,7 +620,7 @@ module Projects
         find('input#select2-input').click
         find("button[data-viral--select2-value-param='#{project25.id}']").click
         click_on I18n.t('projects.samples.transfers.dialog.submit_button')
-        assert_text I18n.t('projects.samples.transfers.dialog.spinner_message')
+        assert_text I18n.t('shared.progress_bar.in_progress')
 
         perform_enqueued_jobs only: [::Samples::TransferJob]
       end
@@ -722,7 +722,7 @@ module Projects
         find('input#select2-input').click
         find("button[data-viral--select2-value-param='#{@project2.id}']").click
         click_on I18n.t('projects.samples.transfers.dialog.submit_button')
-        assert_text I18n.t('projects.samples.transfers.dialog.spinner_message')
+        assert_text I18n.t('shared.progress_bar.in_progress')
 
         perform_enqueued_jobs only: [::Samples::TransferJob]
       end
@@ -1176,7 +1176,7 @@ module Projects
       end
 
       ### VERIFY START ###
-      assert_text I18n.t('shared.samples.metadata.file_imports.dialog.spinner_message')
+      assert_text I18n.t('shared.progress_bar.in_progress')
 
       perform_enqueued_jobs only: [::Samples::MetadataImportJob]
 
@@ -1252,7 +1252,7 @@ module Projects
       ### ACTIONS END ###
 
       ### VERIFY START ###
-      assert_text I18n.t('shared.samples.metadata.file_imports.dialog.spinner_message')
+      assert_text I18n.t('shared.progress_bar.in_progress')
 
       perform_enqueued_jobs only: [::Samples::MetadataImportJob]
 
@@ -1379,8 +1379,7 @@ module Projects
       ### ACTIONS END ###
 
       ### VERIFY START ###
-      assert_text I18n.t('shared.samples.metadata.file_imports.dialog.spinner_message')
-
+      assert_text I18n.t('shared.progress_bar.in_progress')
       perform_enqueued_jobs only: [::Samples::MetadataImportJob]
 
       within('#dialog') do
@@ -1422,8 +1421,7 @@ module Projects
       ### ACTIONS END ###
 
       ### VERIFY START ###
-      assert_text I18n.t('shared.samples.metadata.file_imports.dialog.spinner_message')
-
+      assert_text I18n.t('shared.progress_bar.in_progress')
       perform_enqueued_jobs only: [::Samples::MetadataImportJob]
 
       ### VERIFY START ###
@@ -1472,8 +1470,7 @@ module Projects
       ### ACTIONS END ###
 
       ### VERIFY START ###
-      assert_text I18n.t('shared.samples.metadata.file_imports.dialog.spinner_message')
-
+      assert_text I18n.t('shared.progress_bar.in_progress')
       perform_enqueued_jobs only: [::Samples::MetadataImportJob]
 
       assert_text I18n.t('shared.samples.metadata.file_imports.success.description')
@@ -1504,8 +1501,7 @@ module Projects
       ### ACTIONS END ###
 
       ### VERIFY START ###
-      assert_text I18n.t('shared.samples.metadata.file_imports.dialog.spinner_message')
-
+      assert_text I18n.t('shared.progress_bar.in_progress')
       perform_enqueued_jobs only: [::Samples::MetadataImportJob]
 
       # error msg
@@ -1531,8 +1527,7 @@ module Projects
       ### ACTIONS END ###
 
       ### VERIFY START ###
-      assert_text I18n.t('shared.samples.metadata.file_imports.dialog.spinner_message')
-
+      assert_text I18n.t('shared.progress_bar.in_progress')
       perform_enqueued_jobs only: [::Samples::MetadataImportJob]
 
       # error msg
@@ -1558,8 +1553,7 @@ module Projects
       ### ACTIONS END ###
 
       ### VERIFY START ###
-      assert_text I18n.t('shared.samples.metadata.file_imports.dialog.spinner_message')
-
+      assert_text I18n.t('shared.progress_bar.in_progress')
       perform_enqueued_jobs only: [::Samples::MetadataImportJob]
 
       # error msg
@@ -1604,8 +1598,7 @@ module Projects
       ### ACTIONS END ###
 
       ### VERIFY START ###
-      assert_text I18n.t('shared.samples.metadata.file_imports.dialog.spinner_message')
-
+      assert_text I18n.t('shared.progress_bar.in_progress')
       perform_enqueued_jobs only: [::Samples::MetadataImportJob]
 
       # sample 3 does not exist in current project
@@ -1663,8 +1656,7 @@ module Projects
       ### ACTIONS END ###
 
       ### VERIFY START ###
-      assert_text I18n.t('shared.samples.metadata.file_imports.dialog.spinner_message')
-
+      assert_text I18n.t('shared.progress_bar.in_progress')
       perform_enqueued_jobs only: [::Samples::MetadataImportJob]
 
       assert_text I18n.t('services.samples.metadata.import_file.sample_metadata_fields_not_updated',
@@ -1803,7 +1795,7 @@ module Projects
         find('input#select2-input').click
         find("button[data-viral--select2-value-param='#{@project2.id}']").click
         click_on I18n.t('projects.samples.clones.dialog.submit_button')
-        assert_text I18n.t('projects.samples.clones.dialog.spinner_message')
+        assert_text I18n.t('shared.progress_bar.in_progress')
 
         perform_enqueued_jobs only: [::Samples::CloneJob]
       end
@@ -1859,7 +1851,7 @@ module Projects
         find('input#select2-input').click
         find("button[data-viral--select2-value-param='#{@project2.id}']").click
         click_on I18n.t('projects.samples.clones.dialog.submit_button')
-        assert_text I18n.t('projects.samples.clones.dialog.spinner_message')
+        assert_text I18n.t('shared.progress_bar.in_progress')
 
         perform_enqueued_jobs only: [::Samples::CloneJob]
         ### ACTIONS END ###
@@ -1917,7 +1909,7 @@ module Projects
         find('input#select2-input').click
         find("button[data-viral--select2-value-param='#{project25.id}']").click
         click_on I18n.t('projects.samples.clones.dialog.submit_button')
-        assert_text I18n.t('projects.samples.clones.dialog.spinner_message')
+        assert_text I18n.t('shared.progress_bar.in_progress')
 
         perform_enqueued_jobs only: [::Samples::CloneJob]
         ### ACTIONS END ###
@@ -2041,7 +2033,7 @@ module Projects
         find('input#select2-input').click
         find("button[data-viral--select2-value-param='#{@project2.id}']").click
         click_on I18n.t('projects.samples.clones.dialog.submit_button')
-        assert_text I18n.t('projects.samples.clones.dialog.spinner_message')
+        assert_text I18n.t('shared.progress_bar.in_progress')
 
         perform_enqueued_jobs only: [::Samples::CloneJob]
       end
