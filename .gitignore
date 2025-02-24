@@ -67,3 +67,6 @@ __blobstorage__
 logfile
 
 /config/credentials/production.key
+
+.devcontainer/.env
+/sapporo-runs
