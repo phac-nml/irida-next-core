@@ -1172,14 +1172,11 @@ module Projects
         attach_file 'file_import[file]', Rails.root.join('test/fixtures/files/metadata/valid.csv')
         find('#file_import_sample_id_column', wait: 1).find(:xpath, 'option[2]').select_option
         click_on I18n.t('shared.samples.metadata.file_imports.dialog.submit_button')
-        assert_text I18n.t('viral.progress_bar_component.in_progress')
-        perform_enqueued_jobs only: [::Samples::MetadataImportJob]
         ### ACTIONS END ###
       end
 
       ### VERIFY START ###
-      assert_text I18n.t('shared.progress_bar.in_progress')
-
+      assert_text I18n.t('viral.progress_bar_component.in_progress')
       perform_enqueued_jobs only: [::Samples::MetadataImportJob]
 
       # success msg
@@ -1381,13 +1378,11 @@ module Projects
         attach_file 'file_import[file]', Rails.root.join('test/fixtures/files/metadata/invalid.txt')
         find('#file_import_sample_id_column', wait: 1).find(:xpath, 'option[2]').select_option
         click_on I18n.t('shared.samples.metadata.file_imports.dialog.submit_button')
-        assert_text I18n.t('viral.progress_bar_component.in_progress')
-        perform_enqueued_jobs only: [::Samples::MetadataImportJob]
       end
       ### ACTIONS END ###
 
       ### VERIFY START ###
-      assert_text I18n.t('shared.progress_bar.in_progress')
+        assert_text I18n.t('viral.progress_bar_component.in_progress')
       perform_enqueued_jobs only: [::Samples::MetadataImportJob]
 
       within('#dialog') do
@@ -1508,12 +1503,11 @@ module Projects
         attach_file 'file_import[file]', Rails.root.join('test/fixtures/files/metadata/duplicate_headers.csv')
         find('#file_import_sample_id_column', wait: 1).find(:xpath, 'option[2]').select_option
         click_on I18n.t('shared.samples.metadata.file_imports.dialog.submit_button')
-        assert_text I18n.t('viral.progress_bar_component.in_progress')
-        perform_enqueued_jobs only: [::Samples::MetadataImportJob]
-        ### ACTIONS END ###
 
+    end
+        ### ACTIONS END ###
       ### VERIFY START ###
-      assert_text I18n.t('shared.progress_bar.in_progress')
+        assert_text I18n.t('viral.progress_bar_component.in_progress')
       perform_enqueued_jobs only: [::Samples::MetadataImportJob]
 
       # error msg
@@ -1535,12 +1529,10 @@ module Projects
         attach_file 'file_import[file]', Rails.root.join('test/fixtures/files/metadata/missing_metadata_rows.csv')
         find('#file_import_sample_id_column', wait: 1).find(:xpath, 'option[2]').select_option
         click_on I18n.t('shared.samples.metadata.file_imports.dialog.submit_button')
-        assert_text I18n.t('viral.progress_bar_component.in_progress')
-        perform_enqueued_jobs only: [::Samples::MetadataImportJob]
         ### ACTIONS END ###
-
+    end
       ### VERIFY START ###
-      assert_text I18n.t('shared.progress_bar.in_progress')
+        assert_text I18n.t('viral.progress_bar_component.in_progress')
       perform_enqueued_jobs only: [::Samples::MetadataImportJob]
 
       # error msg
@@ -1562,12 +1554,11 @@ module Projects
         attach_file 'file_import[file]', Rails.root.join('test/fixtures/files/metadata/missing_metadata_columns.csv')
         find('#file_import_sample_id_column', wait: 1).find(:xpath, 'option[2]').select_option
         click_on I18n.t('shared.samples.metadata.file_imports.dialog.submit_button')
-        assert_text I18n.t('viral.progress_bar_component.in_progress')
-        perform_enqueued_jobs only: [::Samples::MetadataImportJob]
+    end
         ### ACTIONS END ###
 
       ### VERIFY START ###
-      assert_text I18n.t('shared.progress_bar.in_progress')
+        assert_text I18n.t('viral.progress_bar_component.in_progress')
       perform_enqueued_jobs only: [::Samples::MetadataImportJob]
 
       # error msg
@@ -1608,12 +1599,11 @@ module Projects
         attach_file 'file_import[file]', Rails.root.join('test/fixtures/files/metadata/mixed_project_samples.csv')
         find('#file_import_sample_id_column', wait: 1).find(:xpath, 'option[2]').select_option
         click_on I18n.t('shared.samples.metadata.file_imports.dialog.submit_button')
-        assert_text I18n.t('viral.progress_bar_component.in_progress')
-        perform_enqueued_jobs only: [::Samples::MetadataImportJob]
+    end
         ### ACTIONS END ###
 
       ### VERIFY START ###
-      assert_text I18n.t('shared.progress_bar.in_progress')
+        assert_text I18n.t('viral.progress_bar_component.in_progress')
       perform_enqueued_jobs only: [::Samples::MetadataImportJob]
 
       # sample 3 does not exist in current project
@@ -1667,12 +1657,11 @@ module Projects
         attach_file 'file_import[file]', Rails.root.join('test/fixtures/files/metadata/contains_analysis_values.csv')
         find('#file_import_sample_id_column', wait: 1).find(:xpath, 'option[2]').select_option
         click_on I18n.t('shared.samples.metadata.file_imports.dialog.submit_button')
-        assert_text I18n.t('viral.progress_bar_component.in_progress')
-        perform_enqueued_jobs only: [::Samples::MetadataImportJob]
+    end
         ### ACTIONS END ###
 
       ### VERIFY START ###
-      assert_text I18n.t('shared.progress_bar.in_progress')
+        assert_text I18n.t('viral.progress_bar_component.in_progress')
       perform_enqueued_jobs only: [::Samples::MetadataImportJob]
 
       assert_text I18n.t('services.samples.metadata.import_file.sample_metadata_fields_not_updated',
