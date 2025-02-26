@@ -24,14 +24,16 @@ module Samples
 
       protected
 
-      def perform_file_import(broadcast_target)
+      def perform_file_import(broadcast_target) # rubocop:disable Metrics/MethodLength
         response = {}
         parse_settings = @headers.zip(@headers).to_h
 
         @spreadsheet.each_with_index(parse_settings) do |metadata, index|
           next unless index.positive?
 
-          stream_progress_update('append', 'progress-bar', '<div></div>', broadcast_target) if broadcast_target
+          stream_progress_update('append', 'progress-bar', '<div></div>', broadcast_target, (index + 1),
+                                 @spreadsheet.count)
+
           sample_id = metadata[@sample_id_column]
 
           metadata.delete(@sample_id_column)
