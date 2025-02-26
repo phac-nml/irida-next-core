@@ -2,11 +2,12 @@ import { Controller } from "@hotwired/stimulus";
 import * as XLSX from "xlsx";
 
 export default class extends Controller {
-  static targets = ["selectInput", "submitButton"];
+  static targets = ["sampleIdColumn", "metadataColumns", "submitButton"];
   static values = {
-    loaded: Boolean
+    loaded: Boolean,
   };
 
+  #headers = [];
   #disabled_classes = [
     "bg-slate-50",
     "border",
@@ -28,12 +29,26 @@ export default class extends Controller {
   ];
 
   connect() {
-    this.#disableSelectInput();
+    this.#disableTarget(this.sampleIdColumnTarget);
+    if (this.hasMetadataColumnsTarget) {
+      this.#disableTarget(this.metadataColumnsTarget);
+    }
     this.submitButtonTarget.disabled = true;
     this.loadedValue = true;
   }
 
-  toggleSubmitButton(event) {
+  changeSampleIDInput() {
+    if (this.hasMetadataColumnsTarget) {
+      this.#removeInputOptions(this.metadataColumnsTarget);
+      this.#addMetadataInputOptions();
+      this.#enableTarget(this.metadataColumnsTarget);
+      this.submitButtonTarget.disabled = true;
+    } else {
+      this.submitButtonTarget.disabled = false;
+    }
+  }
+
+  changeMetadataInput(event) {
     const { value } = event.target;
     this.submitButtonTarget.disabled = !value;
   }
@@ -42,7 +57,7 @@ export default class extends Controller {
     const { files } = event.target;
 
     if (!files.length) {
-      this.#removeSelectOptions();
+      this.#removeInputsOptions();
       return;
     }
 
@@ -53,33 +68,75 @@ export default class extends Controller {
       const workbook = XLSX.read(reader.result, { sheetRows: 1 });
       const worksheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[worksheetName];
-      const headers = XLSX.utils.sheet_to_json(worksheet, { header: 1 })[0];
-      this.#removeSelectOptions();
-      this.#addSelectOptions(headers);
+      this.#headers = XLSX.utils.sheet_to_json(worksheet, { header: 1 })[0];
+      this.#removeInputsOptions();
+      this.#addSampleIDInputOptions();
+      this.#enableTarget(this.sampleIdColumnTarget);
+      if (this.hasMetadataColumnsTarget) {
+        this.#disableTarget(this.metadataColumnsTarget);
+      }
     };
   }
 
-  #removeSelectOptions() {
-    while (this.selectInputTarget.options.length > 1) {
-      this.selectInputTarget.remove(this.selectInputTarget.options.length - 1);
+  #removeInputsOptions() {
+    this.#removeInputOptions(this.sampleIdColumnTarget);
+    this.#disableTarget(this.sampleIdColumnTarget);
+    if (this.hasMetadataColumnsTarget) {
+      this.#removeInputOptions(this.metadataColumnsTarget);
+      this.#disableTarget(this.metadataColumnsTarget);
     }
-    this.#disableSelectInput();
     this.submitButtonTarget.disabled = true;
   }
 
-  #addSelectOptions(headers) {
-    for (let header of headers) {
+  #addSampleIDInputOptions() {
+    for (let header of this.#headers) {
       const option = document.createElement("option");
       option.value = header;
       option.text = header;
-      this.selectInputTarget.append(option);
+      this.sampleIdColumnTarget.append(option);
     }
-    this.selectInputTarget.disabled = false;
-    this.selectInputTarget.classList.remove(...this.#disabled_classes);
   }
 
-  #disableSelectInput() {
-    this.selectInputTarget.disabled = true;
-    this.selectInputTarget.classList.add(...this.#disabled_classes);
+  #addMetadataInputOptions() {
+    const ignoreList = [
+      "sample id",
+      "sample name",
+      "project id",
+      "created_at",
+      "updated_at",
+      "last_updated_at",
+    ];
+
+    let columns = this.#headers.filter(
+      (header) =>
+        !ignoreList.includes(header.toLowerCase()) &&
+        header.toLowerCase() != this.sampleIdColumnTarget.value.toLowerCase(),
+    );
+
+    for (let column of columns) {
+      const option = document.createElement("option");
+      option.value = column;
+      option.text = column;
+      this.metadataColumnsTarget.append(option);
+    }
+  }
+
+  #removeInputOptions(target) {
+    for (let index = target.options.length - 1; index >= 0; index--) {
+      //do not remove the placeholder
+      if (target.options[index].value) {
+        target.remove(index);
+      }
+    }
+  }
+
+  #disableTarget(target) {
+    target.disabled = true;
+    target.classList.add(...this.#disabled_classes);
+  }
+
+  #enableTarget(target) {
+    target.disabled = false;
+    target.classList.remove(...this.#disabled_classes);
   }
 }

@@ -7,6 +7,8 @@ module Projects
     include ActionView::Helpers::SanitizeHelper
 
     setup do
+      Flipper.enable(:metadata_import_field_selection)
+
       @user = users(:john_doe)
       login_as @user
       @sample1 = samples(:sample1)
@@ -1171,6 +1173,9 @@ module Projects
       within('#dialog') do
         attach_file 'file_import[file]', Rails.root.join('test/fixtures/files/metadata/valid.csv')
         find('#file_import_sample_id_column', wait: 1).find(:xpath, 'option[2]').select_option
+        find('#file_import_metadata_columns', wait: 1).find("option[value='metadatafield1']").select_option
+        find('#file_import_metadata_columns', wait: 1).find("option[value='metadatafield2']").select_option
+        find('#file_import_metadata_columns', wait: 1).find("option[value='metadatafield3']").select_option
         click_on I18n.t('shared.samples.metadata.file_imports.dialog.submit_button')
         ### ACTIONS END ###
       end
@@ -1247,6 +1252,10 @@ module Projects
       within('#dialog') do
         attach_file 'file_import[file]', Rails.root.join('test/fixtures/files/metadata/valid.xls')
         find('#file_import_sample_id_column', wait: 1).find(:xpath, 'option[2]').select_option
+        find('#file_import_metadata_columns', wait: 1).find("option[value='metadatafield1']").select_option
+        find('#file_import_metadata_columns', wait: 1).find("option[value='metadatafield2']").select_option
+        find('#file_import_metadata_columns', wait: 1).find("option[value='metadatafield3']").select_option
+        find('#file_import_metadata_columns', wait: 1).find("option[value='metadatafield4']").select_option
         click_on I18n.t('shared.samples.metadata.file_imports.dialog.submit_button')
       end
       ### ACTIONS END ###
@@ -1323,6 +1332,10 @@ module Projects
       within('#dialog') do
         attach_file 'file_import[file]', Rails.root.join('test/fixtures/files/metadata/valid.xlsx')
         find('#file_import_sample_id_column', wait: 1).find(:xpath, 'option[2]').select_option
+        find('#file_import_metadata_columns', wait: 1).find("option[value='metadatafield1']").select_option
+        find('#file_import_metadata_columns', wait: 1).find("option[value='metadatafield2']").select_option
+        find('#file_import_metadata_columns', wait: 1).find("option[value='metadatafield3']").select_option
+        find('#file_import_metadata_columns', wait: 1).find("option[value='metadatafield4']").select_option
         click_on I18n.t('shared.samples.metadata.file_imports.dialog.submit_button')
         ### ACTIONS END ###
       end
@@ -1374,6 +1387,7 @@ module Projects
       within('#dialog') do
         attach_file 'file_import[file]', Rails.root.join('test/fixtures/files/metadata/invalid.txt')
         find('#file_import_sample_id_column', wait: 1).find(:xpath, 'option[2]').select_option
+        find('#file_import_metadata_columns', wait: 1).find("option[value='header']").select_option
         click_on I18n.t('shared.samples.metadata.file_imports.dialog.submit_button')
       end
       ### ACTIONS END ###
@@ -1415,6 +1429,9 @@ module Projects
       within('#dialog') do
         attach_file 'file_import[file]', Rails.root.join('test/fixtures/files/metadata/contains_empty_values.csv')
         find('#file_import_sample_id_column', wait: 1).find(:xpath, 'option[2]').select_option
+        find('#file_import_metadata_columns', wait: 1).find("option[value='metadatafield1']").select_option
+        find('#file_import_metadata_columns', wait: 1).find("option[value='metadatafield2']").select_option
+        find('#file_import_metadata_columns', wait: 1).find("option[value='metadatafield3']").select_option
         # enable ignore empty values
         find('input#file_import_ignore_empty_values').click
         click_on I18n.t('shared.samples.metadata.file_imports.dialog.submit_button')
@@ -1465,6 +1482,9 @@ module Projects
       within('#dialog') do
         attach_file 'file_import[file]', Rails.root.join('test/fixtures/files/metadata/contains_empty_values.csv')
         find('#file_import_sample_id_column', wait: 1).find(:xpath, 'option[2]').select_option
+        find('#file_import_metadata_columns', wait: 1).find("option[value='metadatafield1']").select_option
+        find('#file_import_metadata_columns', wait: 1).find("option[value='metadatafield2']").select_option
+        find('#file_import_metadata_columns', wait: 1).find("option[value='metadatafield3']").select_option
         # leave ignore empty values disabled
         assert_not find('input#file_import_ignore_empty_values').checked?
         click_on I18n.t('shared.samples.metadata.file_imports.dialog.submit_button')
@@ -1499,6 +1519,9 @@ module Projects
       within('#dialog') do
         attach_file 'file_import[file]', Rails.root.join('test/fixtures/files/metadata/duplicate_headers.csv')
         find('#file_import_sample_id_column', wait: 1).find(:xpath, 'option[2]').select_option
+        find('#file_import_metadata_columns', wait: 1).find(:xpath, 'option[1]').select_option
+        find('#file_import_metadata_columns', wait: 1).find(:xpath, 'option[2]').select_option
+        find('#file_import_metadata_columns', wait: 1).find(:xpath, 'option[3]').select_option
         click_on I18n.t('shared.samples.metadata.file_imports.dialog.submit_button')
       end
       ### ACTIONS END ###
@@ -1526,6 +1549,9 @@ module Projects
       within('#dialog') do
         attach_file 'file_import[file]', Rails.root.join('test/fixtures/files/metadata/missing_metadata_rows.csv')
         find('#file_import_sample_id_column', wait: 1).find(:xpath, 'option[2]').select_option
+        find('#file_import_metadata_columns', wait: 1).find("option[value='metadatafield1']").select_option
+        find('#file_import_metadata_columns', wait: 1).find("option[value='metadatafield2']").select_option
+        find('#file_import_metadata_columns', wait: 1).find("option[value='metadatafield3']").select_option
         click_on I18n.t('shared.samples.metadata.file_imports.dialog.submit_button')
       end
       ### ACTIONS END ###
@@ -1553,18 +1579,12 @@ module Projects
       within('#dialog') do
         attach_file 'file_import[file]', Rails.root.join('test/fixtures/files/metadata/missing_metadata_columns.csv')
         find('#file_import_sample_id_column', wait: 1).find(:xpath, 'option[2]').select_option
-        click_on I18n.t('shared.samples.metadata.file_imports.dialog.submit_button')
+        ### ACTIONS END ###
+
+        ### VERIFY START ###
+        assert find("input[value='#{I18n.t('shared.samples.metadata.file_imports.dialog.submit_button')}'").disabled?
+        ### VERIFY END ###
       end
-      ### ACTIONS END ###
-
-      ### VERIFY START ###
-      assert_text I18n.t('shared.samples.metadata.file_imports.dialog.spinner_message')
-
-      perform_enqueued_jobs only: [::Samples::MetadataImportJob]
-
-      # error msg
-      assert_text I18n.t('services.spreadsheet_import.missing_data_columns')
-      ### VERIFY END ###
     end
 
     test 'should partially import metadata with missing sample errors' do
@@ -1599,6 +1619,9 @@ module Projects
       within('#dialog') do
         attach_file 'file_import[file]', Rails.root.join('test/fixtures/files/metadata/mixed_project_samples.csv')
         find('#file_import_sample_id_column', wait: 1).find(:xpath, 'option[2]').select_option
+        find('#file_import_metadata_columns', wait: 1).find("option[value='metadatafield1']").select_option
+        find('#file_import_metadata_columns', wait: 1).find("option[value='metadatafield2']").select_option
+        find('#file_import_metadata_columns', wait: 1).find("option[value='metadatafield3']").select_option
         click_on I18n.t('shared.samples.metadata.file_imports.dialog.submit_button')
       end
       ### ACTIONS END ###
@@ -1658,6 +1681,8 @@ module Projects
       within('#dialog') do
         attach_file 'file_import[file]', Rails.root.join('test/fixtures/files/metadata/contains_analysis_values.csv')
         find('#file_import_sample_id_column', wait: 1).find(:xpath, 'option[2]').select_option
+        find('#file_import_metadata_columns', wait: 1).find("option[value='metadatafield1']").select_option
+        find('#file_import_metadata_columns', wait: 1).find("option[value='metadatafield3']").select_option
         click_on I18n.t('shared.samples.metadata.file_imports.dialog.submit_button')
       end
       ### ACTIONS END ###
