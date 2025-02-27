@@ -5,7 +5,7 @@ module Samples
   class TransferService < BaseProjectService
     TransferError = Class.new(StandardError)
 
-    def execute(new_project_id, sample_ids)
+    def execute(new_project_id, sample_ids, broadcast_target = nil)
       # Authorize if user can transfer samples from the current project
       authorize! @project, to: :transfer_sample?
 
@@ -19,7 +19,7 @@ module Samples
         validate_maintainer_sample_transfer
       end
 
-      transfer(new_project_id, sample_ids)
+      transfer(new_project_id, sample_ids, broadcast_target)
     rescue Samples::TransferService::TransferError => e
       @project.errors.add(:base, e.message)
       []
@@ -47,16 +47,18 @@ module Samples
             I18n.t('services.samples.transfer.maintainer_transfer_not_allowed')
     end
 
-    def transfer(new_project_id, sample_ids) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+    def transfer(new_project_id, sample_ids, broadcast_target) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
       transferred_samples_ids = []
       transferred_samples_puids = []
       not_found_sample_ids = []
 
-      sample_ids.each do |sample_id|
+      sample_ids.each.with_index(1) do |sample_id, index|
         sample = Sample.find_by!(id: sample_id, project_id: @project.id)
         sample.update!(project_id: new_project_id)
         transferred_samples_ids << sample_id
         transferred_samples_puids << sample.puid
+
+        stream_progress_update('append', 'progress-bar', '<div></div>', broadcast_target, index, sample_ids.count)
       rescue ActiveRecord::RecordNotFound
         not_found_sample_ids << sample_id
         next
@@ -73,14 +75,18 @@ module Samples
       end
 
       if transferred_samples_ids.count.positive?
-        create_activities(transferred_samples_ids, transferred_samples_puids)
-
-        @project.namespace.update_metadata_summary_by_sample_transfer(transferred_samples_ids,
-                                                                      new_project_id)
-        update_samples_count(transferred_samples_ids.count)
+        update_namespace_attributes(transferred_samples_ids, transferred_samples_puids, new_project_id)
       end
 
       transferred_samples_ids
+    end
+
+    def update_namespace_attributes(transferred_samples_ids, transferred_samples_puids, new_project_id)
+      create_activities(transferred_samples_ids, transferred_samples_puids)
+
+      @project.namespace.update_metadata_summary_by_sample_transfer(transferred_samples_ids,
+                                                                    new_project_id)
+      update_samples_count(transferred_samples_ids.count)
     end
 
     def create_activities(transferred_samples_ids, transferred_samples_puids) # rubocop:disable Metrics/MethodLength

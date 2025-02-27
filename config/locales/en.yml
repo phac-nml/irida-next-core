@@ -1434,7 +1434,6 @@ en:
           no_available_projects: No available projects
           samples: Samples
           select_project: Select project
-          spinner_message: Copying samples, this might take a while...
           submit_button: Submit
           title: Copy Samples
       create:
@@ -1527,6 +1526,7 @@ en:
           ok_button: OK
         success:
           ok_button: OK
+          success: Success
       show:
         add_metadata: Add Metadata
         concatenate_button: Concatenate Files
@@ -1599,7 +1599,6 @@ en:
           no_available_projects: No available projects
           samples: Samples
           select_project: Select project
-          spinner_message: Transferring samples, this might take a while...
           submit_button: Submit
           title: Transfer Samples
       update:
@@ -1827,7 +1826,6 @@ en:
                 description_html: The identifier is case-sensitive and can contain either the <b>sample name or ID</b>.
             sample_id_column: Sample ID Column
             select_sample_id_column: Select a Sample ID Column
-            spinner_message: Importing sample metadata, this might take a while...
             submit_button: Import Metadata
             title: Upload Sample Metadata
           errors:
@@ -1836,6 +1834,7 @@ en:
           success:
             description: The metadata was imported successfully!
             ok_button: OK
+            success: Success
       metadata_templates:
         fields:
           all: Show All Fields
@@ -1880,6 +1879,8 @@ en:
         aria-label: Pagination
         next: Next
         previous: Previous
+    progress_bar_component:
+      in_progress: Action in progress. Please do not refresh the page.
     sortable_lists_component:
       add_all: Add all
       no_template: No template
